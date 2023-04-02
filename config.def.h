@@ -37,11 +37,11 @@ static const unsigned int snap            = 10;        /* 边缘依附宽度 */
 // 字体配置
 //=============================================================================
 static const char *fonts[]               = {
-      //"monospace:size=15",
-			"Monaco:style=Regular:size=11",
-			"Symbols Nerd Font:style=2048-em:size=17",
-		  "Microsoft YaHei:size=11:style=Regular:antialias=true:autohint:true",
-			"JoyPixels:size=13:antialias=true:autohint=true"
+	//"monospace:size=15",
+	"Monaco:style=Regular:size=11",
+	"Symbols Nerd Font Mono:style=2048-em:size=17",
+	"Microsoft YaHei:size=11:style=Regular:antialias=true:autohint:true",
+	"JoyPixels:size=13:antialias=true:autohint=true"
 };
 
 
@@ -115,10 +115,10 @@ static const char *showhidewindows[] = {
 //=============================================================================
 //                      自启动脚本
 //=============================================================================
-static const char *autostartscript = "~/my_desktop/dwm/autostart/autostart.sh";
+static const char *autostartscript = "~/Desktop/dwm/autostart/autostart.sh";
 //-----------------------------------------------------------------------------
 //                     状态栏启动脚本
-static const char *statusbarscript = "~/my_desktop/dwm/statusbar/statusbar.py";//gxt_kt
+static const char *statusbarscript = "~/Desktop/dwm/statusbar/statusbar.py";//gxt_kt
 
 
 
@@ -220,7 +220,7 @@ static const Layout layouts[] = {
 static const Layout layouts[] = {
 	/* symbol     arrange function, { nmaster, nstack, layout, master axis, stack axis, secondary stack axis } */
 	{ "﬿",          flextile,         { -1, -1, SPLIT_VERTICAL, TOP_TO_BOTTOM, TOP_TO_BOTTOM, 0, NULL } }, // default tile layout
-  { "﩯",        magicgrid,{0} },    /* 网格 */
+    { "﩯",        magicgrid,{0} },    /* 网格 */
 	// { "><>",      NULL,             {0} },    /* no layout function means floating behavior */ // 已经被win+shift+f 替代，不用这个
 	// { "[M]",      flextile,         { -1, -1, NO_SPLIT, MONOCLE, MONOCLE, 0, NULL } }, // monocle
 	// { "|||",      flextile,         { -1, -1, SPLIT_VERTICAL, LEFT_TO_RIGHT, TOP_TO_BOTTOM, 0, NULL } }, // columns (col) layout //其实就是tile
@@ -322,15 +322,15 @@ static Key keys[] = {
 //                      基础和flextile 布局相关
 //=============================================================================
     { MODKEY,              XK_a,       incnmaster,        {.i = +1} },    // 改变主窗口数 1或2 都有效
-	  { MODKEY|ShiftMask,    XK_comma,   cyclelayout,       {.i = -1 } },   // 循环布局 都有效
-	  { MODKEY|ShiftMask,    XK_period,  cyclelayout,       {.i = +1 } },   // 循环布局 都有效
+    { MODKEY|ShiftMask,    XK_comma,   cyclelayout,       {.i = -1 } },   // 循环布局 都有效
+    { MODKEY|ShiftMask,    XK_period,  cyclelayout,       {.i = +1 } },   // 循环布局 都有效
 //-----------------------------------------------------------------------------
     { MODKEY,          XK_bracketleft, incnstack,         {.i = -1 } },   // 增加从堆栈数 仅flextile有效
     { MODKEY,          XK_bracketright,incnstack,         {.i = +1 } },   // 减少从堆栈数 仅flextile有效
   	{ MODKEY|ControlMask,  XK_Return,  mirrorlayout,      {0} },          // 翻转主区域和堆栈区域 仅flextile有效
 //-----------------------------------------------------------------------------
-	  { MODKEY|ControlMask,  XK_comma,   rotatelayoutaxis,  {.i = -1 } },   // 循环另一种布局 仅flextile有效
-	  { MODKEY|ControlMask,  XK_period,  rotatelayoutaxis,  {.i = +1 } },   // 循环另一种布局 仅flextile有效
+    { MODKEY|ControlMask,  XK_comma,   rotatelayoutaxis,  {.i = -1 } },   // 循环另一种布局 仅flextile有效
+    { MODKEY|ControlMask,  XK_period,  rotatelayoutaxis,  {.i = +1 } },   // 循环另一种布局 仅flextile有效
 //-----------------------------------------------------------------------------
     // It's just need to map one key to change layout between layouts[0] and layouts[1].
     // { MODKEY|ShiftMask,  XK_o,      selectlayout,     {.v = &layouts[0]} }, // 切换到第1个布局 
@@ -358,7 +358,7 @@ static Key keys[] = {
     // Notice that if you first use copyq , Remeber config 1.disable tray show 2.Enable hidden mainwindow. Then you can use this better.
     { MODKEY,              XK_v,        spawn,   SHCMD("copyq toggle") },  // copyq
     { MODKEY|ShiftMask,    XK_s,        spawn,   SHCMD("flameshot gui") }, // flameshot
-    { MODKEY|ControlMask,  XK_l,        spawn,   SHCMD("~/my_desktop/dwm/i3lock/lock.sh") },   
+    { MODKEY|ControlMask,  XK_l,        spawn,   SHCMD("~/Desktop/dwm/i3lock/lock.sh") },   
     { MODKEY,           XK_grave, togglescratch, SHCMD("alacritty -t scratchpad --class floatingTerminal")  }, // 打开/隐藏scrtachpad
     { MODKEY,              XK_Return,   spawn,   SHCMD("alacritty") }, // 新打开一个终端
     { MODKEY|ShiftMask,    XK_n,        spawn,   SHCMD("alacritty -t term-global --class globalingTerminal") }, // 新打开一个浮动终端
@@ -408,7 +408,7 @@ static Key keys[] = {
     TAGKEYS(XK_8, 7,  0)
     TAGKEYS(XK_9, 8,  0)
     TAGKEYS(XK_r, 5,  "obs")
-    TAGKEYS(XK_c, 6,  "google-chrome-stable") 
+    TAGKEYS(XK_c, 6,  "firefox") 
     TAGKEYS(XK_m, 7,  "/opt/YesPlayMusic/yesplaymusic")
 //-----------------------------------------------------------------------------
     //TAGKEYS(XK_0, 8,  "linuxqq")
@@ -419,9 +419,9 @@ static Key keys[] = {
 //=============================================================================
 //    根据相关信号执行指令，除python脚本位置外一般不需要更改，但需要注意相关指令包存在
 //=============================================================================
-{ 0, XF86XK_AudioMute,         spawn, SHCMD("pamixer -t;  python3 /home/gxt_kt/my_desktop/dwm/statusbar/vol.py notify ") },
-{ 0, XF86XK_AudioRaiseVolume,  spawn, SHCMD("pamixer -i 5;python3 /home/gxt_kt/my_desktop/dwm/statusbar/vol.py notify ") },
-{ 0, XF86XK_AudioLowerVolume,  spawn, SHCMD("pamixer -d 5;python3 /home/gxt_kt/my_desktop/dwm/statusbar/vol.py notify ") },
+{ 0, XF86XK_AudioMute,         spawn, SHCMD("pamixer -t;  python3 /home/gxt_kt/Desktop/dwm/statusbar/vol.py notify ") },
+{ 0, XF86XK_AudioRaiseVolume,  spawn, SHCMD("pamixer -i 5;python3 /home/gxt_kt/Desktop/dwm/statusbar/vol.py notify ") },
+{ 0, XF86XK_AudioLowerVolume,  spawn, SHCMD("pamixer -d 5;python3 /home/gxt_kt/Desktop/dwm/statusbar/vol.py notify ") },
 { 0, XF86XK_AudioPause,        spawn, SHCMD("playerctl stop") },
 { 0, XF86XK_AudioPrev,         spawn, SHCMD("playerctl previous") },
 { 0, XF86XK_AudioNext,         spawn, SHCMD("playerctl next") },
@@ -443,21 +443,21 @@ static Button buttons[] = {
 //=============================================================================
     /* 点击窗口标题栏操作 */
 //=============================================================================
-    { ClkWinTitle,         0,          Button3,     hideotherwins, {0} },                                   // 右键         |  点击标题     |  隐藏其他窗口仅保留该窗口
-    { ClkWinTitle,         0,          Button1,     togglewin,     {0} },                                   // 左键         |  点击标题     |  切换窗口显示状态
+    { ClkWinTitle,         0,          Button3,     hideotherwins, {0} },         // 右键         |  点击标题     |  隐藏其他窗口仅保留该窗口
+    { ClkWinTitle,         0,          Button1,     togglewin,     {0} },         // 左键         |  点击标题     |  切换窗口显示状态
 //=============================================================================
     /* 点击窗口操作 */
 //=============================================================================
-    { ClkClientWin,        MODKEY,     Button1,     movemouse,     {0} },                                   // super+左键  |  拖拽窗口     |  拖拽窗口
-    { ClkClientWin,        MODKEY,     Button3,     resizemouse,   {0} },                                   // super+右键  |  拖拽窗口     |  改变窗口大小
+    { ClkClientWin,        MODKEY,     Button1,     movemouse,     {0} },         // super+左键  |  拖拽窗口     |  拖拽窗口
+    { ClkClientWin,        MODKEY,     Button3,     resizemouse,   {0} },         // super+右键  |  拖拽窗口     |  改变窗口大小
 //=============================================================================
     /* 点击tag操作 */
 //=============================================================================
-    { ClkTagBar,           0,          Button1,     view,          {0} },                                   // 左键        |  点击tag      |  切换tag
-	  { ClkTagBar,           0,          Button3,     toggleview,    {0} },                                   // 右键        |  点击tag      |  切换是否显示tag
-    { ClkTagBar,           MODKEY,     Button1,     tag,           {0} },                                   // super+左键  |  点击tag      |  将窗口移动到对应tag
-    { ClkTagBar,           0,          Button4,     viewtoleft,    {0} },                                   // 鼠标滚轮上  |  tag          |  向前切换tag
-	  { ClkTagBar,           0,          Button5,     viewtoright,   {0} },                                   // 鼠标滚轮下  |  tag          |  向后切换tag
+    { ClkTagBar,           0,          Button1,     view,          {0} },         // 左键        |  点击tag      |  切换tag
+    { ClkTagBar,           0,          Button3,     toggleview,    {0} },         // 右键        |  点击tag      |  切换是否显示tag
+    { ClkTagBar,           MODKEY,     Button1,     tag,           {0} },         // super+左键  |  点击tag      |  将窗口移动到对应tag
+    { ClkTagBar,           0,          Button4,     viewtoleft,    {0} },         // 鼠标滚轮上  |  tag          |  向前切换tag
+    { ClkTagBar,           0,          Button5,     viewtoright,   {0} },         // 鼠标滚轮下  |  tag          |  向后切换tag
 
 //=============================================================================
     /* 点击bar空白处 有需要自行启动 */

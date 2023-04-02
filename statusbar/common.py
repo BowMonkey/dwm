@@ -9,27 +9,28 @@ import threading
 # import time
 
 PACKAGES_LISTS={
-               'music_title':1,
-               'music_pre':10,
-               'music_play':1,
-               'music_next':10,
-               'icon':100,
-               'screen':3,
-               # 'pacman':36000,
-               'net':1,
-               'cpu':2,
-               'memory':2,
-               'wifi':2,
-               'vol':1,
-               'battery':3,
+               #'music_title':1,
+               #'music_pre':10,
+               #'music_play':1,
+               #'music_next':10,
+               #'icon':100,
+               #'screen':3,
+               ## 'pacman':36000,
+               #'net':1,
+               #'cpu':2,
+               #'memory':2,
+               #'wifi':2,
+               #'vol':1,
+               #'battery':3,
                'date':1,
                }
 
 
 
-DWM_PATH="/home/gxt_kt/my_desktop/dwm/"
+DWM_PATH="/home/coco/Desktop/dwm/"
 PACKAGES_PATH=DWM_PATH+"statusbar/"
-TEMP_FILE="/home/gxt_kt/python_tmp"
+#TEMP_FILE="/home/coco/python_tmp"
+TEMP_FILE=PACKAGES_PATH+"python_tmp"
 
 MUSIC_PROGRAM="yesplaymusic"
 

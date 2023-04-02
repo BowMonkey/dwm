@@ -39,7 +39,7 @@ static const unsigned int snap            = 10;        /* 边缘依附宽度 */
 static const char *fonts[]               = {
       //"monospace:size=15",
 			"Monaco:style=Regular:size=11",
-			"Symbols Nerd Font:style=2048-em:size=17",
+			"Symbols Nerd Font Mono:style=2048-em:size=17",
 		  "Microsoft YaHei:size=11:style=Regular:antialias=true:autohint:true",
 			"JoyPixels:size=13:antialias=true:autohint=true"
 };
@@ -115,10 +115,10 @@ static const char *showhidewindows[] = {
 //=============================================================================
 //                      自启动脚本
 //=============================================================================
-static const char *autostartscript = "~/my_desktop/dwm/autostart/autostart.sh";
+static const char *autostartscript = "~/Desktop/dwm/autostart/autostart.sh";
 //-----------------------------------------------------------------------------
 //                     状态栏启动脚本
-static const char *statusbarscript = "~/my_desktop/dwm/statusbar/statusbar.py";//gxt_kt
+static const char *statusbarscript = "~/Desktop/dwm/statusbar/statusbar.py";//gxt_kt
 
 
 
@@ -358,7 +358,7 @@ static Key keys[] = {
     // Notice that if you first use copyq , Remeber config 1.disable tray show 2.Enable hidden mainwindow. Then you can use this better.
     { MODKEY,              XK_v,        spawn,   SHCMD("copyq toggle") },  // copyq
     { MODKEY|ShiftMask,    XK_s,        spawn,   SHCMD("flameshot gui") }, // flameshot
-    { MODKEY|ControlMask,  XK_l,        spawn,   SHCMD("~/my_desktop/dwm/i3lock/lock.sh") },   
+    { MODKEY|ControlMask,  XK_l,        spawn,   SHCMD("~/Desktop/dwm/i3lock/lock.sh") },   
     { MODKEY,           XK_grave, togglescratch, SHCMD("alacritty -t scratchpad --class floatingTerminal")  }, // 打开/隐藏scrtachpad
     { MODKEY,              XK_Return,   spawn,   SHCMD("alacritty") }, // 新打开一个终端
     { MODKEY|ShiftMask,    XK_n,        spawn,   SHCMD("alacritty -t term-global --class globalingTerminal") }, // 新打开一个浮动终端
@@ -419,9 +419,9 @@ static Key keys[] = {
 //=============================================================================
 //    根据相关信号执行指令，除python脚本位置外一般不需要更改，但需要注意相关指令包存在
 //=============================================================================
-{ 0, XF86XK_AudioMute,         spawn, SHCMD("pamixer -t;  python3 /home/gxt_kt/my_desktop/dwm/statusbar/vol.py notify ") },
-{ 0, XF86XK_AudioRaiseVolume,  spawn, SHCMD("pamixer -i 5;python3 /home/gxt_kt/my_desktop/dwm/statusbar/vol.py notify ") },
-{ 0, XF86XK_AudioLowerVolume,  spawn, SHCMD("pamixer -d 5;python3 /home/gxt_kt/my_desktop/dwm/statusbar/vol.py notify ") },
+{ 0, XF86XK_AudioMute,         spawn, SHCMD("pamixer -t;  python3 /home/gxt_kt/Desktop/dwm/statusbar/vol.py notify ") },
+{ 0, XF86XK_AudioRaiseVolume,  spawn, SHCMD("pamixer -i 5;python3 /home/gxt_kt/Desktop/dwm/statusbar/vol.py notify ") },
+{ 0, XF86XK_AudioLowerVolume,  spawn, SHCMD("pamixer -d 5;python3 /home/gxt_kt/Desktop/dwm/statusbar/vol.py notify ") },
 { 0, XF86XK_AudioPause,        spawn, SHCMD("playerctl stop") },
 { 0, XF86XK_AudioPrev,         spawn, SHCMD("playerctl previous") },
 { 0, XF86XK_AudioNext,         spawn, SHCMD("playerctl next") },
