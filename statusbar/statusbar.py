@@ -63,7 +63,7 @@ def Run() :
   scheduler.start()
 
   while True :
-    # print("debug point 1")
+    #print("debug point 1")
     MainRefresh()
     time.sleep(0.5)
 

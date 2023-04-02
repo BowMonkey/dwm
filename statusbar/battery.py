@@ -26,7 +26,8 @@ name=re.sub("\..*",'',filename)
 def get_battery_status():
   charge_icon=""
 
-  cmd="echo $(acpi | sed 's/^Battery 0: //g' | awk -F ',' '{print $1}') "
+  #cmd="echo $(acpi | head -n 1| sed 's/^Battery 0: //g' | awk '{print $1}') "
+  cmd="echo $(acpi |rg 'Battery 0'|sed 's/,//g'|awk '{print $3}')"
   result = subprocess.run(cmd, shell=True, timeout=3, stderr=subprocess.PIPE, stdout=subprocess.PIPE)
   charge_sta=result.stdout.decode('utf-8').replace('\n','')
 

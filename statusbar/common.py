@@ -9,19 +9,18 @@ import threading
 # import time
 
 PACKAGES_LISTS={
-               #'music_title':1,
-               #'music_pre':10,
-               #'music_play':1,
-               #'music_next':10,
-               #'icon':100,
-               #'screen':3,
-               ## 'pacman':36000,
-               #'net':1,
-               #'cpu':2,
-               #'memory':2,
-               #'wifi':2,
-               #'vol':1,
-               #'battery':3,
+               'music_title':1,
+               'music_pre':10,
+               'music_play':1,
+               'music_next':10,
+               'icon':100,
+               'screen':3,
+               'net':1,
+               'cpu':2,
+               'memory':2,
+               'wifi':2,
+               'vol':1,
+               'battery':3,
                'date':1,
                }
 

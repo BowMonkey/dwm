@@ -7,7 +7,7 @@ import re
 import time
 import _thread
 import common
-import screeninfo
+#import screeninfo
 
 
 icon_fg=common.black
@@ -28,39 +28,13 @@ def update(loop=False,exec=True):
   while True :
     icon=" 󰹑"
 
-    # TODO:
-    # 暂时有个问题是执行和xrandr相关的命令会卡顿，暂时没找到解决方法
-    # 如果有人知道怎么用python得到得到连接显示器数量，欢迎提issue或pr，谢谢.
-    connected_ports=0
+    #connected_monitors=0
+    #screen_info=str(screeninfo.get_monitors())
+    #connected_monitors=screen_info.count('Monitor')
+    cmd="echo $(xrandr --listmonitors | head -n 1| awk '{print $2}')"
+    result = subprocess.run(cmd, shell=True, timeout=3, stderr=subprocess.PIPE, stdout=subprocess.PIPE)
+    connected_monitors=result.stdout.decode('utf-8').replace('\n','')
 
-    # cmd="autorandr --fingerprint"
-    # result = subprocess.run(cmd, shell=True, timeout=3, stderr=subprocess.PIPE, stdout=subprocess.PIPE)
-    # port_string=result.stdout.decode('utf-8') # note that no replace('\n','')
-    # connected_ports=int(port_string.count('\n'))
-
-    # cmd="xrandr | grep -Eo '\\bconnected\\b'"
-    # p = subprocess.Popen(args=cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, close_fds=True)
-    # tmp=p.communicate()
-    # connected_ports=str(tmp).count('connected')
-
-    # cmd="xrandr | grep -Eo '\\bconnected\\b'"
-    # result=subprocess.Popen(cmd, shell=True, timeout=3, stderr=subprocess.PIPE, stdout=subprocess.PIPE)
-    # connected_string=result.stdout.decode('utf-8').replace('\n','')
-    # connected_ports=connected_string.count('connected')
-
-    # cmd="echo $(xrandr | grep -w 'connected' | awk '{print $1}' | wc -l)"
-    # result = subprocess.run(cmd, shell=True, timeout=3, stderr=subprocess.PIPE, stdout=subprocess.PIPE)
-    # connected_ports=result.stdout.decode('utf-8').replace('\n','')
-
-    connected_monitors=0
-    screen_info=str(screeninfo.get_monitors())
-    connected_monitors=screen_info.count('Monitor')
-    # cmd="echo $(xrandr --listmonitors | sed 1d | awk '{print $4}' | wc -l)"
-    # result = subprocess.run(cmd, shell=True, timeout=3, stderr=subprocess.PIPE, stdout=subprocess.PIPE)
-    # connected_monitors=result.stdout.decode('utf-8').replace('\n','')
-
-    # TODO:
-    # text=" "+str(connected_monitors)+"/"+str(connected_ports)+" "
     text=" "+str(connected_monitors)+" "
     txt="^s"+str(name)+"^"+str(icon_color)+str(icon)+str(text_color)+str(text)
     common.write_to_file(txt+"\n",str(name))
