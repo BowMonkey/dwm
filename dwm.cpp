@@ -94,7 +94,7 @@ enum {
     SchemeSelTag,     // 选中的标签
     SchemeBarEmpty,   // 状态栏空白部分
     SchemeOverView,   // overview
-    SchemeStatusText, // 状态栏文本    
+    SchemeStatusText, // 状态栏文本
 }; /* color schemes */
 enum { NetSupported, NetWMName, NetWMState, NetWMCheck,
        NetSystemTray, NetSystemTrayOP, NetSystemTrayOrientation, NetSystemTrayOrientationHorz,
@@ -262,6 +262,7 @@ static void restorewin(const Arg *arg);
 static void incnmaster(const Arg *arg);
 static void keypress(XEvent *e);
 static void killclient(const Arg *arg);
+static void killtag(const Arg *arg);
 static void forcekillclient(const Arg *arg);
 
 static int ShowHideWindows(const Arg *arg);
@@ -461,14 +462,14 @@ logtofile(char log[100])
 
 char _gDebugBuf[150];
 void gDebug(const char *fmt, ...) {
-#ifdef G_NO_DEBUG_OUTPUT 
+#ifdef G_NO_DEBUG_OUTPUT
   return;
-#endif 
+#endif
   va_list ap;
   va_start(ap, fmt);
   vsprintf((char *) _gDebugBuf, fmt, ap);
   va_end(ap);
-  int i = strlen((const char *) _gDebugBuf); 
+  int i = strlen((const char *) _gDebugBuf);
   char tmp[150];
   sprintf(tmp,"%.*s", i, _gDebugBuf);
   char cmd[150];
@@ -506,7 +507,7 @@ applyrules(Client *c)
             c->isglobal = r->isglobal;
             c->isnoborder = r->isnoborder;
 
-            c->tags |= r->tags; 
+            c->tags |= r->tags;
 
             if (r->isnoborder)
                 c->bw = 0;
@@ -519,7 +520,7 @@ applyrules(Client *c)
         c->isscratchpad = 1;
         c->isglobal = 1; // scratchpad is default global
         c->is_showhidewindows=true;
-    } 
+    }
     if (ch.res_class)
         XFree(ch.res_class);
     if (ch.res_name)
@@ -664,7 +665,7 @@ buttonpress(XEvent *e)
     if (ev->window == selmon->barwin) { // 点击在bar上
         i = x = 0;
         blw = TEXTW(selmon->ltsymbol);
-        
+
         if (selmon->isoverview) {
             x += TEXTW(overviewtag);
             i = ~0;
@@ -1658,7 +1659,7 @@ focusdir(const Arg *arg)
 {
     Client *c = NULL;
     int issingle = issinglewin(NULL);
-    
+
     c=DirectionSelect(arg);
 
     if (issingle) {
@@ -1690,7 +1691,7 @@ focusstack(const Arg *arg)
         tc = selmon->clients;
     if (!tc)
         return;
-    
+
 
     for (c = selmon->clients; c; c = c->next) {
         if (ISVISIBLE(c) && (issingle || !HIDDEN(c))) {
@@ -1860,7 +1861,7 @@ grabkeys(void)
 }
 
 
-void 
+void
 hide(Client *c) {
     if (!c || HIDDEN(c))
         return;
@@ -1882,9 +1883,9 @@ hide(Client *c) {
     XUngrabServer(dpy);
 
     //gxt_kt resolve bug
-    if (c->is_showhidewindows==false ) { 
+    if (c->is_showhidewindows==false ) {
       hiddenWinStack[++hiddenWinStackTop] = c;
-    } 
+    }
 
     focus(c->snext);
     arrange(c->mon);
@@ -1971,8 +1972,8 @@ killclient(const Arg *arg)
 
     // gxt_kt
     if (if_forcekill2kill == 0) { // from forcekill to kill
-    
-        // gxt_kt 
+
+        // gxt_kt
         if(ShowHideWindows(arg)) return;
 
         c = selmon->clients;
@@ -2017,12 +2018,36 @@ forcekillclient(const Arg *arg)
         return;
 
     // gxt_kt
-    if_forcekill2kill = 1; 
-    
+    if_forcekill2kill = 1;
+
     killclient(arg);
     unmanage(selmon->sel, 1);
 }
+void
+killwin(const Window *win) {
+               XGrabServer(dpy);
+               XSetErrorHandler(xerrordummy);
+               XSetCloseDownMode(dpy, DestroyAll);
+               XKillClient(dpy, *win);
+               XSync(dpy, False);
+               XSetErrorHandler(xerror);
+               XUngrabServer(dpy);
+}
 
+void
+killtag(const Arg *arg)
+{
+       Client *i = NULL;
+
+       if (!selmon->sel)
+               return;
+
+       for (i = selmon->clients; i; i = i->next) {
+               if (ISVISIBLE(i) && !sendevent(i->win, wmatom[WMDelete], NoEventMask, wmatom[WMDelete], CurrentTime, 0 , 0, 0)) {
+                       killwin(&(i->win));
+               }
+       }
+}
 int ShowHideWindows(const Arg *arg) {
     int nums = LENGTH(showhidewindows);
     for (int i = 0; i < nums; i++) {
@@ -2050,14 +2075,14 @@ void ToggleShowHideWindows(const Arg *arg) {
 
     if(found) {
         if (find_c->mon == selmon) {// 在同屏幕则toggle win状态
-      
+
           if(HIDDEN(find_c) || (find_c->tags != selmon->tagset[find_c->mon->seltags])) {
           // if(HIDDEN(find_c) ||
           //    (find_c->tags != selmon->tagset[find_c->mon->seltags]&&
           //       find_c->tags!=(2<<(LENGTH(tags)-1))-1) ) { // 这里有一个bug是，
           // // 在第一次使用浮动界面时，tag会不等于当前tag,导致出现第一次无法隐藏
           // // 已经在managefloating函数处修复，这里就不需要了
-          
+
                 find_c->tags=selmon->tagset[selmon->seltags];
                 sendmon(find_c, selmon);
                 show(find_c);
@@ -2067,7 +2092,7 @@ void ToggleShowHideWindows(const Arg *arg) {
           }else {
             hidewin(find_c); //为了防止有时候隐藏不成功，再次隐藏
           }
-        } 
+        }
         else {                // 不在同屏幕则将win移到当前屏幕 并显示
             sendmon(find_c, selmon);
             show(find_c);
@@ -2312,11 +2337,11 @@ movewin(const Arg *arg)
             top = c->y;
             ny -= c->mon->wh / 4;
             for (tc = c->mon->clients; tc; tc = tc->next) {
-                // 若浮动tc c的顶边会穿过tc的底边 
+                // 若浮动tc c的顶边会穿过tc的底边
                 if (!ISVISIBLE(tc) || !tc->isfloating || tc == c) continue;
                 if (c->x + WIDTH(c) < tc->x || c->x > tc->x + WIDTH(tc)) continue;
-                buttom = tc->y + HEIGHT(tc) + gappi;  
-                if (top > buttom && ny < buttom) {  
+                buttom = tc->y + HEIGHT(tc) + gappi;
+                if (top > buttom && ny < buttom) {
                     tar = MAX(tar, buttom);
                 };
             }
@@ -2328,11 +2353,11 @@ movewin(const Arg *arg)
             buttom = c->y + HEIGHT(c);
             ny += c->mon->wh / 4;
             for (tc = c->mon->clients; tc; tc = tc->next) {
-                // 若浮动tc c的底边会穿过tc的顶边 
+                // 若浮动tc c的底边会穿过tc的顶边
                 if (!ISVISIBLE(tc) || !tc->isfloating || tc == c) continue;
                 if (c->x + WIDTH(c) < tc->x || c->x > tc->x + WIDTH(tc)) continue;
                 top = tc->y - gappi;
-                if (buttom < top && (ny + HEIGHT(c)) > top) {  
+                if (buttom < top && (ny + HEIGHT(c)) > top) {
                     tar = MIN(tar, top - HEIGHT(c));
                 };
             }
@@ -2344,7 +2369,7 @@ movewin(const Arg *arg)
             left = c->x;
             nx -= c->mon->ww / 6;
             for (tc = c->mon->clients; tc; tc = tc->next) {
-                // 若浮动tc c的左边会穿过tc的右边 
+                // 若浮动tc c的左边会穿过tc的右边
                 if (!ISVISIBLE(tc) || !tc->isfloating || tc == c) continue;
                 if (c->y + HEIGHT(c) < tc->y || c->y > tc->y + HEIGHT(tc)) continue;
                 right = tc->x + WIDTH(tc) + gappi;
@@ -2360,7 +2385,7 @@ movewin(const Arg *arg)
             right = c->x + WIDTH(c);
             nx += c->mon->ww / 6;
             for (tc = c->mon->clients; tc; tc = tc->next) {
-                // 若浮动tc c的右边会穿过tc的左边 
+                // 若浮动tc c的右边会穿过tc的左边
                 if (!ISVISIBLE(tc) || !tc->isfloating || tc == c) continue;
                 if (c->y + HEIGHT(c) < tc->y || c->y > tc->y + HEIGHT(tc)) continue;
                 left = tc->x - gappi;
@@ -2396,7 +2421,7 @@ resizewin(const Arg *arg)
             right = c->x + WIDTH(c);
             nw += selmon->ww / 16;
             for (tc = c->mon->clients; tc; tc = tc->next) {
-                // 若浮动tc c的右边会穿过tc的左边 
+                // 若浮动tc c的右边会穿过tc的左边
                 if (!ISVISIBLE(tc) || !tc->isfloating || tc == c) continue;
                 if (c->y + HEIGHT(c) < tc->y || c->y > tc->y + HEIGHT(tc)) continue;
                 left = tc->x - gappi;
@@ -2417,11 +2442,11 @@ resizewin(const Arg *arg)
             buttom = c->y + HEIGHT(c);
             nh += selmon->wh / 8;
             for (tc = c->mon->clients; tc; tc = tc->next) {
-                // 若浮动tc c的底边会穿过tc的顶边 
+                // 若浮动tc c的底边会穿过tc的顶边
                 if (!ISVISIBLE(tc) || !tc->isfloating || tc == c) continue;
                 if (c->x + WIDTH(c) < tc->x || c->x > tc->x + WIDTH(tc)) continue;
                 top = tc->y - gappi;
-                if (buttom < top && (c->y + nh) > top) {  
+                if (buttom < top && (c->y + nh) > top) {
                     tar = MAX(tar, top - c->y - 2 * c->bw);
                 };
             }
@@ -2504,7 +2529,7 @@ propertynotify(XEvent *e)
     }
 }
 
- 
+
 // restoreafterrestart
 void
 saveSession(void)
@@ -2531,7 +2556,7 @@ restoreSession(void)
 		int check = sscanf(str, "%lu %u", &winId, &tagsForWin); // get data
 		if (check != 2) // break loop if data wasn't read correctly
 			break;
-		
+
 		for (Client *c = selmon->clients; c ; c = c->next) { // add tags to every window by winId
 			if (c->win == winId) {
 				c->tags = tagsForWin;
@@ -2550,7 +2575,7 @@ restoreSession(void)
 
 	free(str);
 	fclose(fr);
-	
+
 	// delete a file
 	remove(SESSION_FILE);
 }
@@ -2581,7 +2606,7 @@ void restoreTagSession() {
     arrange(m);
 
 	fclose(fr);
-	
+
 	// delete a file
 	remove(SESSION_TAG_FILE);
 }
@@ -2921,7 +2946,7 @@ tagtoright(const Arg *arg) {
           Arg arg_;
           arg_.ui= selmon->tagset[selmon->seltags] << 1;
           tag(&arg_);
-        
+
     }
 }
 
@@ -3030,7 +3055,7 @@ setlayout(const Arg *arg)
 {
     if (arg->v != selmon->lt[selmon->sellt])
         selmon->sellt = selmon->pertag->sellts[selmon->pertag->curtag] ^= 1;
-    if (arg->v) 
+    if (arg->v)
         selmon->lt[selmon->sellt] = selmon->pertag->ltidxs[selmon->pertag->curtag][selmon->sellt] = (Layout *)arg->v;
 
   // gxt_kt
@@ -3048,8 +3073,8 @@ setlayout(const Arg *arg)
 	selmon->pertag->ltaxis[selmon->pertag->curtag][MASTER] = selmon->ltaxis[MASTER];
 	selmon->pertag->ltaxis[selmon->pertag->curtag][STACK]  = selmon->ltaxis[STACK];
 	selmon->pertag->ltaxis[selmon->pertag->curtag][STACK2] = selmon->ltaxis[STACK2];
-  
-  
+
+
 
     arrange(selmon);
 }
@@ -3413,7 +3438,7 @@ togglescratch(const Arg *arg)
             Arg arg_;
             arg_.v=c;
             togglewin(&arg_);
-        } 
+        }
         else {                // 不在同屏幕则将win移到当前屏幕 并显示
             sendmon(c, selmon);
             show(c);
@@ -3432,9 +3457,9 @@ restorewin(const Arg *arg) {
     int i = hiddenWinStackTop;
     while (i > -1) {
         if (HIDDEN(hiddenWinStack[i]) && \
-        ISVISIBLE(hiddenWinStack[i]) 
+        ISVISIBLE(hiddenWinStack[i])
         )
-        //hiddenWinStack[i]->tags == selmon->tagset[selmon->seltags]  
+        //hiddenWinStack[i]->tags == selmon->tagset[selmon->seltags]
         {
             show(hiddenWinStack[i]);
             focus(hiddenWinStack[i]);
@@ -3916,7 +3941,7 @@ updatetitle(Client *c)
   }
   if (!strcmp(c->name, scratchpadname)) {
       c->is_showhidewindows=true;
-  } 
+  }
 }
 
 void
@@ -3961,7 +3986,7 @@ setgap(const Arg *arg)
 void
 view(const Arg *arg)
 {
-    
+
     int i;
     unsigned int tmptag;
     Client *c;
@@ -4092,7 +4117,7 @@ void GoBackToNextTag(const Arg *arg) {
       selmon->tag_res.tag_restore[selmon->tag_res.p]<=0);
   } else {
     --selmon->tag_res.p;
-    if(selmon->tag_res.p<0||selmon->tag_res.p>=RESTORE_TAG_MAXNUM || 
+    if(selmon->tag_res.p<0||selmon->tag_res.p>=RESTORE_TAG_MAXNUM ||
       selmon->tag_res.tag_restore[selmon->tag_res.p]<=0) {
       ++selmon->tag_res.p;
       return;
@@ -4128,7 +4153,7 @@ void GoBackToPreTag(const Arg *arg) {
 void InspectTagRestore(void) {
   int p=selmon->tag_res.p;
   if(p>0) { // 大于0说明已经处于打断状态，需要移动
-    // 全部往前移动   
+    // 全部往前移动
     for(int i=0;i<RESTORE_TAG_MAXNUM;i++) {
       if(i+p<RESTORE_TAG_MAXNUM) {
         selmon->tag_res.tag_restore[i]=selmon->tag_res.tag_restore[i+p];
@@ -4284,7 +4309,7 @@ tile_right(Monitor *m)
     mh = m->nmaster == 0 ? 0 : (m->wh-2*gappo-gappi*(m->nmaster-1)) / m->nmaster;       // 单个master的高度
     sh = n == m->nmaster ? 0 : (m->wh-2*gappo-gappi*(n-m->nmaster-1)) / (n - m->nmaster); // 单个stack的高度
     sw=(m->ww)*m->mfact;
-  
+
     if (n > m->nmaster) {
       mw = m->nmaster ? ((m->ww) * (1-m->mfact)) : 0; // master_width
       mx=m->wx+sw+gappi/2;
@@ -4293,7 +4318,7 @@ tile_right(Monitor *m)
         mw = m->ww;
         mx = m->wx+gappo;
     }
-    
+
 
     // 当增加了nmaster,并且只有一个窗口时
     if(m->nmaster<=2 && n==1) { // one master window
@@ -4517,7 +4542,7 @@ void ExchangeTwoClient(Client* c1, Client* c2) {
   }else if(c2==selmon->clients) {
     selmon->clients=c1;
   }
-  
+
 	focus(c1);
 	arrange(c1->mon);
   pointerfocuswin(c1);
@@ -4602,9 +4627,9 @@ main(int argc, char *argv[])
       runAutostart();
     }
     // runAutostart();
-    
+
     // gDebug("restoreSession");
-	  restoreSession();// restoreafterrestart
+	restoreSession();// restoreafterrestart
     restoreTagSession();// gxt_kt
     run();
     // if(restart) execvp(argv[0], argv);
