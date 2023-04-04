@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+
 
 import os
 import sys
@@ -40,8 +40,10 @@ def update(loop=False,exec=True):
 def update_thread():
   _thread.start_new_thread(update,(False,False))
 
+def logout():
+  os.system("pkill -KILL -u coco")
 def shutdown():
-  os.system("shutdown -h now")
+  os.system("shutdown -P now")
 def reboot():
   os.system("reboot")
 def sleep():
@@ -52,7 +54,8 @@ def lock():
 
 def system_rofi_set() :
     #      key:display information   value:function
-    choose={"⏻ Shutdown":"shutdown",
+    choose={"󰍃 Logout":"logout",
+            "⏻ Shutdown":"shutdown",
             " Reboot":"reboot",
             "⏾ Sleep":"sleep",
             " Lock":"lock",

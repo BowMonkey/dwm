@@ -4,5 +4,6 @@ dwm
 compile_commands.json
 .cache
 statusbar/temp
+statusbar/python_tmp
 result/
 *__pycache__*

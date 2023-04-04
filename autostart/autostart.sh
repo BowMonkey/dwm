@@ -18,7 +18,7 @@ cron&
 # need a bluetooth manager
 copyq & # copy software
 
-picom --experimental-backends& 
+#picom --experimental-backends& 
 
 
 pkill -f statusbar.py

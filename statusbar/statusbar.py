@@ -77,8 +77,8 @@ if __name__ == "__main__":
     elif(sys.argv[1]=="update") :
       pass
     else :
-      # for string in sys.argv :
-      #   print(string)
+      #  for string in sys.argv :
+      #     print(string)
       #   # cmd="echo '" +str(string) + "'" + ">> python_debug"
       #   cmd="echo '" +str(string) + "'"
       #   # cmd = "echo '123' >> python_debug"
