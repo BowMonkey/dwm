@@ -4,7 +4,7 @@
 //=============================================================================
 //                基础配置，看自己习惯
 //=============================================================================
-static const int newclientathead          = 1;         /* 定义新窗口在栈顶还是栈底 */
+static const int newclientathead          = 0;         /* 定义新窗口在栈顶还是栈底 */
 static int showsystray                    = 1;         /* 是否显示托盘栏 */
 static const unsigned int systraypinning  = 1;         /* 托盘跟随的显示器 0代表不指定显示器 */
 static const unsigned int systrayspacing  = 1;         /* 托盘间距 */
@@ -53,14 +53,14 @@ static const char *fonts[]= {
 // 千万不可以修改顺序，只可以在当前位置改颜色，修改顺序就乱了
 static const char *colors[][3]{
     /*                     fg       bg      border */
-    /*SchemeNorm      普通      */   { gray3,   black,  gray2 },
-    /*SchemeSel       选中      */   { gray4,   blue,   blue  },
-    /*SchemeSelGlobal 全局选中  */   { dark,    gray5,  orange},
-    /*SchemeTabSel    选中tag   */   { blue,    gray2,  black },
-    /*SchemeTabNorm   普通tag   */   { blue2,   black,  black },
-    /*SchemeUnderline 下划线    */   { blue2,   black,  black },
-    /*SchemeMode      模式      */   { green,   black,  black },
-    /*SchemeHid       隐藏      */   { white2,  0x00,   0x00  },
+    /*SchemeNorm      普通      */   { blue,    black,  black }, //ok
+    /*SchemeSel       选中      */   { blue,    gray2,  blue  }, //ok
+    /*SchemeSelGlobal 全局选中  */   { orange,  red,    orange}, //FIXME: set not work
+    /*SchemeTabSel    选中tag   */   { blue,    gray2,  black }, //ok
+    /*SchemeTabNorm   普通tag   */   { blue2,   black,  black }, //ok
+    /*SchemeUnderline 下划线    */   { blue2,   black,  black }, //ok
+    /*SchemeMode      模式      */   { green,   black,  black }, //ok
+    /*SchemeHid       隐藏      */   { blue2,   black,  black }, //ok
     /*SchemeSystray   托盘      */   { 0x00,    black,  black },
     /*SchemeNormTag   普通标签  */   {green,gray3, 0x00 },
     /*SchemeSelTag    选中标签  */   {white,red, 0x00 },
@@ -234,7 +234,7 @@ static Key keys[] = {
     { MODKEY|ShiftMask,    XK_k,       ExchangeClient,    {.i = 2 } },  // 移动窗口  in layout
     { MODKEY|ShiftMask,    XK_l,       ExchangeClient,    {.i = 3} },   // 移动窗口  in layout
     //-----------------------------------------------------------------------------
-    { MODKEY,              XK_Tab,     toggleoverview,    {0} },        // 显示所有tag 或 跳转到聚焦窗口的tag */
+    //{ MODKEY,              XK_Tab,     toggleoverview,    {0} },        // 显示所有tag 或 跳转到聚焦窗口的tag */
     { MODKEY,              XK_Tab,     focusstack,        {.i = +1} },  // 本tag内切换聚焦窗口
     { MODKEY|ShiftMask,    XK_Tab,     focusstack,        {.i = -1} },  // 本tag内切换聚焦窗口
     //-----------------------------------------------------------------------------
@@ -252,7 +252,7 @@ static Key keys[] = {
     { MODKEY,              XK_o,       GoBackToPreTag,    {0} },        // 切换历史tag
     { MODKEY,              XK_i,       GoBackToNextTag,   {0} },        // 切换历史tag
     //-----------------------------------------------------------------------------
-    { MODKEY|ControlMask,  XK_Escape,  quit,              {0} },        // 退出dwm
+    { MODKEY|ControlMask,  XK_Escape,  quit,              {0} },        // 退出dwm //error
     { MODKEY,              XK_Escape,  quit,              {1} },        // 重启dwm
     //-----------------------------------------------------------------------------
 
@@ -314,7 +314,7 @@ static Key keys[] = {
     //=============================================================================
     //                              其它命令
     //=============================================================================
-    { MODKEY,              XK_l,        spawn,   SHCMD("slock") },// lock screen use slock
+    { MODKEY|ControlMask,  XK_l,        spawn,   SHCMD("slock") },// lock screen use slock
     { MODKEY,              XK_s,        spawn,   SHCMD("rofi -show drun -show-icons") },// rofi
     { MODKEY,              XK_r,        spawn,   SHCMD("rofi -show run -show-icons") }, // rofi
     // Notice that if you first use copyq , Remeber config 1.disable tray show 2.Enable hidden mainwindow. Then you can use this better.
@@ -358,17 +358,16 @@ static Key keys[] = {
     //=============================================================================
     //    根据相关信号执行指令，除python脚本位置外一般不需要更改，但需要注意相关指令包存在
     //=============================================================================
-    { 0, XF86XK_AudioMute,         spawn, SHCMD("pamixer -t;  python3 /home/coco/Desktop/dwm/statusbar/vol.py notify ") },
-    { 0, XF86XK_AudioRaiseVolume,  spawn, SHCMD("pamixer -i 5;python3 /home/coco/Desktop/dwm/statusbar/vol.py notify ") },
-    { 0, XF86XK_AudioLowerVolume,  spawn, SHCMD("pamixer -d 5;python3 /home/coco/Desktop/dwm/statusbar/vol.py notify ") },
-    { 0, XF86XK_AudioPause,        spawn, SHCMD("playerctl stop") },
-    { 0, XF86XK_AudioPrev,         spawn, SHCMD("playerctl previous") },
-    { 0, XF86XK_AudioNext,         spawn, SHCMD("playerctl next") },
-    { 0, XF86XK_AudioPlay,         spawn, SHCMD("playerctl play") },
-    { 0, XF86XK_AudioStop,         spawn, SHCMD("playerctl stop") },
-    { 0, XF86XK_AudioStop,         spawn, SHCMD("playerctl stop") },
-    { 0, XF86XK_MonBrightnessUp,   spawn, SHCMD("light -A 5; notify-send -r 9123 -h int:value:`light` -h string:hlcolor:#dddddd 'Backlight' " ) },
-    { 0, XF86XK_MonBrightnessDown, spawn, SHCMD("light -U 5; notify-send -r 9123 -h int:value:`light` -h string:hlcolor:#dddddd 'Backlight' " ) },
+    { 0, XF86XK_AudioMute,         spawn, SHCMD("python3 /home/coco/Desktop/dwm/statusbar/vol.py M ") },
+    { 0, XF86XK_AudioRaiseVolume,  spawn, SHCMD("python3 /home/coco/Desktop/dwm/statusbar/vol.py U") },
+    { 0, XF86XK_AudioLowerVolume,  spawn, SHCMD("python3 /home/coco/Desktop/dwm/statusbar/vol.py D") },
+    { 0, XF86XK_AudioPause,        spawn, SHCMD("playerctl -l | rg chromium | xargs playerctl play-pause") },
+    { 0, XF86XK_AudioPrev,         spawn, SHCMD("playerctl -l | rg chromium | xargs playerctl previous") },
+    { 0, XF86XK_AudioNext,         spawn, SHCMD("playerctl -l | rg chromium | xargs playerctl next") },
+    { 0, XF86XK_AudioPlay,         spawn, SHCMD("playerctl -l | rg chromium | xargs playerctl play-pause") },
+    { 0, XF86XK_AudioStop,         spawn, SHCMD("playerctl -l | rg chromium | xargs playerctl stop") },
+    { 0, XF86XK_MonBrightnessUp,   spawn, SHCMD("sudo light -A 5; notify-send -r 9123 -h int:value:`light` -h string:hlcolor:#dddddd 'Backlight' " ) },
+    { 0, XF86XK_MonBrightnessDown, spawn, SHCMD("sudo light -U 5; notify-send -r 9123 -h int:value:`light` -h string:hlcolor:#dddddd 'Backlight' " ) },
 
 };
 
